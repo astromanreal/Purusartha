@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Base light theme variables */
+    --background: 45 60% 95%; /* Light serene beige/cream */
+    --foreground: 270 30% 15%; /* Dark purple for text */
+    --card: 45 60% 100%; /* White */
+    --card-foreground: 270 30% 15%;
+    --popover: 45 60% 100%;
+    --popover-foreground: 270 30% 15%;
+    --secondary: 45 40% 90%; /* Lighter beige */
+    --secondary-foreground: 270 30% 20%;
+    --muted: 45 30% 85%;
+    --muted-foreground: 270 20% 40%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 45 30% 80%;
+    --input: 45 30% 80%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+
+    /* Default/Fallback Accent Theme (Sanatan Gold Light) - Overridden by ThemeProvider */
+    --primary: 51 90% 45%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 51 90% 55%;
+    --accent-foreground: 270 30% 10%;
+    --ring: 51 90% 45%;
+
+    /* Base Sidebar light theme colors */
+    --sidebar-background: 45 50% 92%;
+    --sidebar-foreground: 270 30% 20%;
+    --sidebar-border: 45 30% 80%;
+    
+    /* Default/Fallback Sidebar Accent Colors (Sanatan Gold Light) - Overridden by ThemeProvider */
+    --sidebar-primary: 51 90% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 45 40% 88%; /* Background for active/hover item */
+    --sidebar-accent-foreground: 51 90% 45%; /* Text color for active/hover item */
+    --sidebar-ring: 51 90% 45%;
+  }
+
+  .dark {
+    /* Base dark theme variables */
+    --background: 270 30% 15%; /* Dark Cosmic Purple */
+    --foreground: 40 50% 95%; /* Light Serene Cream */
+    --card: 270 30% 20%; /* Slightly lighter purple for cards */
+    --card-foreground: 40 50% 95%;
+    --popover: 270 30% 20%;
+    --popover-foreground: 40 50% 95%;
+    --secondary: 270 30% 25%; /* Another shade of purple */
+    --secondary-foreground: 40 50% 90%;
+    --muted: 270 20% 30%;
+    --muted-foreground: 40 30% 70%;
+    --destructive: 0 70% 50%; /* A vibrant red for errors */
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 20% 25%;
+    --input: 270 20% 25%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    /* Default/Fallback Accent Theme (Sanatan Gold Dark) - Overridden by ThemeProvider */
+    --primary: 51 100% 50%;
+    --primary-foreground: 270 30% 10%;
+    --accent: 51 100% 60%;
+    --accent-foreground: 270 30% 10%;
+    --ring: 51 100% 50%;
+
+    /* Base Sidebar dark theme colors */
+    --sidebar-background: 270 30% 12%; 
+    --sidebar-foreground: 40 50% 85%;
+    --sidebar-border: 270 30% 20%;
+
+    /* Default/Fallback Sidebar Accent Colors (Sanatan Gold Dark) - Overridden by ThemeProvider */
+    --sidebar-primary: 51 100% 50%;
+    --sidebar-primary-foreground: 270 30% 10%;
+    --sidebar-accent: 270 30% 20%; /* Background for active/hover item */
+    --sidebar-accent-foreground: 51 100% 50%; /* Text color for active/hover item */
+    --sidebar-ring: 51 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
