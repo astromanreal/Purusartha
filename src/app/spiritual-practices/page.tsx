@@ -2,6 +2,7 @@
 "use client";
 
 import * as React from "react";
+import type { Metadata } from 'next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,6 +17,23 @@ import { Button } from "@/components/ui/button";
 import { XIcon, Sparkles } from "lucide-react";
 import { spiritualPracticesCategories } from "@/data/spiritual-practices-data";
 import type { PracticeCategory, PracticeItem } from "@/data/spiritual-practices-data";
+import { APP_NAME } from "@/lib/constants";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+
+export const metadataObject: Metadata = {
+  title: `Spiritual Practices in Sanatan Dharma | ${APP_NAME}`,
+  description: `Explore diverse spiritual practices in Sanatan Dharma with ${APP_NAME}, including Puja, Arti, Yajna, Meditation (Dhyana), various Yoga paths (Bhakti, Jnana, Karma), Kirtan, and more.`,
+  keywords: ['Spiritual Practices', 'Hindu Rituals', 'Puja', 'Yajna', 'Meditation', 'Dhyana', 'Yoga', 'Bhakti Yoga', 'Jnana Yoga', 'Karma Yoga', 'Kirtan', 'Mantra', 'Sanatan Dharma Practices', APP_NAME],
+  alternates: {
+    canonical: `${BASE_URL}/spiritual-practices`,
+  },
+  openGraph: {
+    title: `Spiritual Practices in Sanatan Dharma | ${APP_NAME}`,
+    description: 'Explore diverse spiritual practices like Puja, Yajna, Meditation, and various Yoga paths.',
+    url: `${BASE_URL}/spiritual-practices`,
+  },
+};
 
 export default function SpiritualPracticesPage() {
   const [selectedPractice, setSelectedPractice] = React.useState<PracticeItem | null>(null);

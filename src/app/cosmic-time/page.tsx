@@ -2,10 +2,47 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import type { Metadata } from 'next';
 import { Orbit, BookOpenCheck, Users, Brain, Award, CircleDot, Layers, Zap, HelpCircle, Mountain, Sparkles, Sigma, RefreshCcw } from "lucide-react";
-import { cn } from "@/lib/utils"; // Added import for cn
+import { cn } from "@/lib/utils"; 
+import { APP_NAME } from "@/lib/constants";
 
-// Moved SunMoon definition here, before cosmicTimeData
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+
+export const metadata: Metadata = {
+  title: `Cosmic Time Cycles: Yugas, Kalpas & Pralaya | ${APP_NAME}`,
+  description: `Explore the vast cosmic time cycles of Sanatan Dharma on ${APP_NAME}. Learn about the four Yugas (Satya, Treta, Dvapara, Kali), Mahayugas, Kalpas (Day of Brahmā), Pralaya (cosmic dissolution), and Brahmā's life cycle. Understand the cyclical nature of time and its philosophical implications in Hindu cosmology.`,
+  keywords: ['Cosmic Time', 'Yugas', 'Kalpa', 'Pralaya', 'Mahayuga', 'Manvantara', 'Sanatan Dharma Time', 'Hindu Cosmology', 'Vedic Time Cycles', 'Brahma Life Cycle', 'Cyclical Time', APP_NAME],
+  alternates: {
+    canonical: `${BASE_URL}/cosmic-time`,
+  },
+  openGraph: {
+    title: `Cosmic Time Cycles in Sanatan Dharma: Yugas, Kalpas, Pralaya | ${APP_NAME}`,
+    description: 'Delve into the profound Hindu cosmology of time, exploring Yugas, Kalpas, Pralaya, and the cyclical nature of existence with SanatanSphere.',
+    url: `${BASE_URL}/cosmic-time`,
+    siteName: APP_NAME,
+    images: [
+      {
+        url: `${BASE_URL}/og-images/og-image-cosmic-time.png`, // Specific OG image
+        width: 1200,
+        height: 630,
+        alt: `Cosmic Time Cycles - ${APP_NAME}`,
+      },
+    ],
+    type: 'article',
+    article: {
+      section: "Vedic Cosmology",
+      tags: ['Cosmic Time', 'Yugas', 'Kalpa', 'Pralaya', 'Hindu Cosmology', APP_NAME],
+    }
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Cosmic Time Cycles: Yugas, Kalpas & Pralaya | ${APP_NAME}`,
+    description: 'Explore Yugas, Kalpas, Pralaya, and the cyclical nature of time in Hindu cosmology.',
+    images: [`${BASE_URL}/og-images/og-image-cosmic-time.png`],
+  },
+};
+
 const SunMoon = ({ className }: { className?: string }) => (
   <svg className={cn("h-5 w-5", className)} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
@@ -63,7 +100,7 @@ const cosmicTimeData = {
       },
       "Kalpa": {
         "title": "Kalpa (कल्प) - Day of Brahmā",
-        "Icon": SunMoon, // Re-using for day/night cycle analogy
+        "Icon": SunMoon, 
         "Duration": "4.32 billion human years (1,000 Mahāyugas)",
         "Description": "A Kalpa is a 'day' in the life of Brahmā (the creator god). It is followed by a 'night' of Brahmā (Pralaya), which also lasts for 4.32 billion years. During this night, the universe undergoes dissolution.",
         "Structure": {
@@ -73,7 +110,7 @@ const cosmicTimeData = {
       },
       "Pralaya": {
         "title": "Pralaya (प्रलय) - Cosmic Dissolution",
-        "Icon": Zap, // Icon for destruction/transformation
+        "Icon": Zap, 
         "Description": "The period of dissolution or destruction in the universe that occurs at the end of a Kalpa (Naimittika Pralaya) or at the end of Brahmā's lifespan (Mahāpralaya).",
         "Types": {
           "NaimittikaPralaya": "Periodic dissolution at the end of each Kalpa (Brahmā's day).",
@@ -83,7 +120,7 @@ const cosmicTimeData = {
       },
       "BrahmasLifeCycle": {
         "title": "Brahmā's Life Cycle (ब्रह्म-आयु)",
-        "Icon": CircleDot, // Icon for cycle/totality
+        "Icon": CircleDot, 
         "Duration": "100 divine years (311.04 trillion human years)",
         "Description": "The entire lifespan of Brahmā. After Brahmā’s life ends, a Mahāpralaya occurs, and a new cycle of creation begins with a new Brahmā.",
         "Structure": {
@@ -125,13 +162,13 @@ const cosmicTimeData = {
       },
       "KarmaAndReincarnation": {
         "title": "Karma (कर्म) and Reincarnation (पुनर्जन्म)",
-        "Icon": Sigma, // Representing sum of actions or consequence
+        "Icon": Sigma, 
         "Explanation": "The concept of Karma (action and its consequences) and Reincarnation (Punarjanma) is intricately tied to Cosmic Time. Every action creates impressions (Saṃskāras) that shape an individual's destiny across multiple lifetimes within these vast cosmic cycles.",
         "Impact": "The cyclical nature of time and reincarnation encourages individuals to live righteously (Dharmically), understanding that their actions shape future lives and contribute to their journey towards liberation (Moksha)."
       },
       "SpiritualProgression": {
         "title": "Spiritual Progression & Decline through Yugas",
-        "Icon": Mountain, // Representing ascent/descent
+        "Icon": Mountain, 
         "Explanation": "Each Yuga represents different levels of collective spiritual consciousness and adherence to Dharma. As time progresses from Satya Yuga to Kali Yuga, there is a general decline in spiritual awareness and virtue, though individual effort can always lead to spiritual awakening irrespective of the Yuga."
       }
     },
@@ -141,7 +178,6 @@ const cosmicTimeData = {
   }
 };
 
-// Helper function to render key-value pairs from an object
 const renderObjectDetails = (details: Record<string, string>, title?: string) => (
   <Card className="bg-muted/50 p-4 rounded-md shadow-sm my-3">
     {title && <CardTitle className="text-md font-semibold text-accent mb-2">{title}</CardTitle>}
@@ -161,8 +197,40 @@ const renderObjectDetails = (details: Record<string, string>, title?: string) =>
 export default function CosmicTimePage() {
   const data = cosmicTimeData.CosmicTimeSanatanDharma;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": metadata.title as string,
+    "description": metadata.description as string,
+    "keywords": (metadata.keywords as string[]).join(", "),
+    "image": `${BASE_URL}/og-images/og-image-cosmic-time.png`,
+    "author": {
+      "@type": "Organization",
+      "name": APP_NAME
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": APP_NAME,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${BASE_URL}/logo-icon.png` 
+      }
+    },
+    "datePublished": "2024-01-01", // Or a more specific date if available
+    "dateModified": new Date().toISOString(),
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${BASE_URL}/cosmic-time`
+    }
+  };
+
+
   return (
     <div className="container mx-auto py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Card className="shadow-xl border-primary/20">
         <CardHeader className="text-center">
           <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4 mx-auto">
@@ -180,7 +248,7 @@ export default function CosmicTimePage() {
             <h2 className="text-2xl font-semibold text-accent mb-6 text-center flex items-center justify-center">
               <BookOpenCheck className="h-7 w-7 mr-3" /> Key Concepts
             </h2>
-            <Accordion type="multiple" className="w-full space-y-4">
+            <Accordion type="multiple" defaultValue={["Kalachakra", "Yugas"]} className="w-full space-y-4">
               {Object.entries(data.KeyConcepts).map(([key, concept]) => {
                 const IconComponent = concept.Icon || HelpCircle;
                 return (
@@ -282,3 +350,4 @@ export default function CosmicTimePage() {
     </div>
   );
 }
+

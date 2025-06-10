@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -23,7 +24,20 @@ function Calendar({
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center",
-        caption_label: "text-sm font-medium",
+        caption_label: "text-sm font-medium", // For the text part of the caption, if any
+        caption_dropdowns: "flex items-center gap-1.5", // Styles the container of the <select> elements
+        
+        // Styles for the <select> elements for month and year
+        dropdown_month: cn(
+          "relative z-10 rounded-md border border-input bg-popover px-2 py-1 pr-7 text-sm font-medium text-popover-foreground shadow-sm", // Removed appearance-none
+          "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+        ),
+        dropdown_year: cn(
+          "relative z-10 rounded-md border border-input bg-popover px-2 py-1 pr-7 text-sm font-medium text-popover-foreground shadow-sm", // Removed appearance-none
+          "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+        ),
+        // dropdown_icon: "hidden", // Allow native or RDP default icon
+
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
@@ -46,20 +60,16 @@ function Calendar({
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
         day_today: "bg-accent text-accent-foreground",
         day_outside:
-          "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
+          "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
         day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
-        ...classNames,
+        ...classNames, // Merge with user-provided classNames
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("h-4 w-4", className)} {...props} />
-        ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("h-4 w-4", className)} {...props} />
-        ),
+        IconLeft: ({ className: rdpClassName, ...restProps }) => <ChevronLeft className={cn("h-4 w-4", rdpClassName)} {...restProps} />,
+        IconRight: ({ className: rdpClassName, ...restProps }) => <ChevronRight className={cn("h-4 w-4", rdpClassName)} {...restProps} />,
       }}
       {...props}
     />
@@ -68,3 +78,4 @@ function Calendar({
 Calendar.displayName = "Calendar"
 
 export { Calendar }
+

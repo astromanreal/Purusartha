@@ -1,8 +1,47 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import type { Metadata } from 'next';
 import { CalendarDays, Info, ListChecks, Clock3, SunMoon, Stars } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { APP_NAME } from "@/lib/constants";
+import Link from "next/link";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+
+export const metadata: Metadata = {
+  title: `Hindu Calendar System - Mānas & Panchang Principles | ${APP_NAME}`,
+  description: `Learn about the Hindu calendar system on ${APP_NAME}. Explore the nine Mānas (measures of time) including Saura, Sāvana, Candra, and Nākṣatra Māna, and understand the core principles of the lunisolar Panchang. Essential for understanding festivals and Muhurtas.`,
+  keywords: ['Hindu Calendar', 'Panchang', 'Māna', 'Vedic Calendar', 'Lunisolar Calendar', 'Tithi', 'Nakshatra', 'Yoga', 'Karana', 'Saura Mana', 'Chandra Mana', 'Muhurta', 'Hindu Time System', APP_NAME],
+  alternates: {
+    canonical: `${BASE_URL}/hindu-calendar`,
+  },
+  openGraph: {
+    title: `Hindu Calendar System - Mānas & Panchang Principles | ${APP_NAME}`,
+    description: 'Explore the nine Mānas (measures of time) and the core principles of the Hindu lunisolar calendar system, crucial for festivals and Muhurtas.',
+    url: `${BASE_URL}/hindu-calendar`,
+    siteName: APP_NAME,
+    images: [
+      {
+        url: `${BASE_URL}/og-images/og-image-hindu-calendar.png`, // Specific OG image
+        width: 1200,
+        height: 630,
+        alt: `Hindu Calendar System - ${APP_NAME}`,
+      },
+    ],
+    type: 'article',
+    article: {
+      section: "Vedic Calendrical Systems",
+      tags: ['Hindu Calendar', 'Panchang', 'Māna', 'Vedic Calendar', APP_NAME],
+    }
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Hindu Calendar System - Mānas & Panchang Principles | ${APP_NAME}`,
+    description: 'Explore the nine Mānas (measures of time) and the core principles of the Hindu lunisolar calendar system.',
+    images: [`${BASE_URL}/og-images/og-image-hindu-calendar.png`],
+  },
+};
 
 const manasData = [
   {
@@ -58,7 +97,7 @@ const manasData = [
     id: "candra-mana",
     name: "Candra Māna (चान्द्र मान - Lunar)",
     description: "Actively used. Based on the lunar day (tithi) and the Moon's phases (pakṣa). Forms the basis for lunar months and is pivotal for most Hindu festivals and religious observances.",
-    icon: SunMoon, // Using SunMoon again to represent celestial cycles
+    icon: SunMoon, 
     active: true,
   },
   {
@@ -72,9 +111,40 @@ const manasData = [
 
 
 export default function HinduCalendarPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": metadata.title as string,
+    "description": metadata.description as string,
+    "keywords": (metadata.keywords as string[]).join(", "),
+    "image": `${BASE_URL}/og-images/og-image-hindu-calendar.png`,
+    "author": {
+      "@type": "Organization",
+      "name": APP_NAME
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": APP_NAME,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${BASE_URL}/logo-icon.png` 
+      }
+    },
+    "datePublished": "2024-01-01", 
+    "dateModified": new Date().toISOString(),
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${BASE_URL}/hindu-calendar`
+    }
+  };
+
   return (
     <div className="container mx-auto py-8">
-      <Card className="shadow-xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Card className="shadow-xl border-primary/20">
         <CardHeader className="text-center">
           <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4">
             <CalendarDays className="h-12 w-12 text-primary" />
@@ -103,7 +173,7 @@ export default function HinduCalendarPage() {
             <p className="text-base text-foreground/90 mb-6 leading-relaxed">
               The Hindu calendrical system defines nine principal measures of time, known as <strong className="font-semibold text-accent">Māna (Sanskrit: मान)</strong>. These provide a comprehensive framework for understanding different scales and types of time. While all nine have scriptural basis, four are predominantly used in contemporary calendrical computations and daily life.
             </p>
-            <Accordion type="multiple" className="w-full space-y-3">
+            <Accordion type="multiple" defaultValue={["saura-mana", "candra-mana"]} className="w-full space-y-3">
               {manasData.map((mana) => (
                 <AccordionItem value={mana.id} key={mana.id} className="border bg-background rounded-md shadow-sm hover:shadow-primary/10 transition-shadow">
                   <AccordionTrigger className="px-4 py-3 text-left hover:no-underline text-lg font-medium text-foreground data-[state=open]:bg-primary/5">
@@ -130,9 +200,9 @@ export default function HinduCalendarPage() {
           <div className="mt-10 p-6 border border-dashed border-primary/50 rounded-lg bg-background/30 text-center">
             <h3 className="text-xl font-semibold text-primary mb-2">Panchang & Festival Calendar View</h3>
             <p className="text-muted-foreground">
-              Our digital Panchang is being meticulously crafted. Soon, you'll be able to access comprehensive calendar information including tithis, nakshatras, yogas, karanas, festival dates, and auspicious timings (muhurtas).
+              Our digital Panchang is being meticulously crafted. Soon, you'll be able to access comprehensive calendar information including tithis, nakshatras, yogas, karanas, festival dates, and auspicious timings (muhurtas) directly within the <Link href="/panchang" className="text-accent hover:underline">Panchang section</Link>.
             </p>
-            <div data-ai-hint="traditional calendar" className="mt-4 aspect-video bg-muted rounded-md flex items-center justify-center">
+            <div data-ai-hint="traditional calendar view" className="mt-4 aspect-video bg-muted rounded-md flex items-center justify-center">
               <p className="text-muted-foreground">Placeholder for Interactive Calendar View</p>
             </div>
           </div>

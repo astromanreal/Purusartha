@@ -1,3 +1,4 @@
+
 "use server";
 
 import { askRishi, type AskRishiInput, type AskRishiOutput } from "@/ai/flows/ask-a-rishi";
@@ -48,10 +49,22 @@ export async function submitSpiritualQuestion(
     return { message: "success", data: result };
   } catch (error) {
     console.error("Error calling AI in server action:", error);
-    // Check if error is an object and has a message property
-    const errorMessage = (typeof error === 'object' && error !== null && 'message' in error && typeof error.message === 'string') 
-                         ? error.message 
-                         : "An unknown error occurred.";
-    return { message: `An error occurred while consulting the Rishi: ${errorMessage}. Please try again.` };
+    let detailedErrorMessage = "An unknown error occurred.";
+    if (typeof error === 'object' && error !== null && 'message' in error && typeof error.message === 'string') {
+      detailedErrorMessage = error.message;
+    }
+
+    // Check for common indicators of API/Genkit issues
+    const errorText = detailedErrorMessage.toLowerCase();
+    if (errorText.includes("fetch") || 
+        errorText.includes("api key") ||
+        errorText.includes("auth") ||
+        errorText.includes("credential") ||
+        errorText.includes("permission denied") || 
+        errorText.includes("quota")) {
+      detailedErrorMessage += " This might be due to a network issue, an incorrect or missing API key for the AI service (e.g., GOOGLE_API_KEY in your .env file), exceeded quotas, or the Genkit development server (often run with 'npm run genkit:dev') not being active. Please check your setup and API service dashboard.";
+    }
+    
+    return { message: `An error occurred while consulting the Rishi: ${detailedErrorMessage}. Please try again.` };
   }
 }

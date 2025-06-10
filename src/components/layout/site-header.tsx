@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -7,7 +8,7 @@ import { APP_NAME } from "@/lib/constants";
 import { Logo } from "@/components/icons/logo";
 import { ThemeToggle } from "./theme-toggle";
 import { MoreNavMenu } from "./more-nav-menu";
-import { LayoutGrid, Settings, Mail, User } from "lucide-react";
+import { LayoutGrid, Settings, Mail, User, Compass } from "lucide-react"; // Added Compass
 
 export function SiteHeader() {
   const { isMobile } = useSidebar(); 
@@ -23,6 +24,11 @@ export function SiteHeader() {
       </div>
 
       <div className="ml-auto flex items-center gap-2">
+        <Button variant="ghost" size="icon" asChild className="hidden md:inline-flex">
+          <Link href="/kundli-compass-features" aria-label="Kundali Compass Features">
+            <Compass className="h-5 w-5" />
+          </Link>
+        </Button>
         <Button variant="ghost" size="icon" asChild className="hidden md:inline-flex">
           <Link href="/explore" aria-label="Explore features">
             <LayoutGrid className="h-5 w-5" />

@@ -1,135 +1,311 @@
 
+// src/app/explore/page.tsx
 import Link from 'next/link';
 import Image from 'next/image';
+import type { Metadata } from 'next';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { NAV_ITEMS } from "@/lib/constants";
-import { ArrowRight, LayoutGrid } from 'lucide-react';
+import { NAV_ITEMS, APP_NAME } from "@/lib/constants";
+import { ArrowRight, LayoutGrid, LucideIcon } from 'lucide-react';
 
-// Filter out Dashboard and Explore itself for the feature cards on this page
-const featureCards = NAV_ITEMS.filter(item => item.href !== '/' && item.href !== '/explore');
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
-// Updated placeholder images to match homepage and specific Purusartha Challenge image
-const placeholderImages = [
-  { hint: "journey path", url: "https://i.pinimg.com/736x/fe/ac/6c/feac6c33ee83f31a84993bf7483e8c10.jpg" }, // Purusartha Challenge
-  { hint: "galaxy stars", url: "https://i.pinimg.com/736x/15/c0/ec/15c0ecbfaeebf9fbf12882d7a7848ef4.jpg" }, // Cosmic Time
-  { hint: "ancient calendar", url: "https://i.pinimg.com/736x/72/37/e4/7237e42fbc524b8ff8203cd152e1ad38.jpg" }, // Hindu Calendar
-  { hint: "joyful celebration", url: "https://i.pinimg.com/736x/ac/ee/84/acee84b614896ac3b4913f2640668813.jpg" }, // Hindu Festivals
-  { hint: "zodiac chart", url: "https://i.pinimg.com/736x/ee/32/e5/ee32e5926e939024fcff048c7a2bf09e.jpg" }, // Rashis (Zodiac)
-  { hint: "celestial planets", url: "https://i.pinimg.com/736x/a2/76/e3/a276e3cd620c8239b908b84a0697f58e.jpg" }, // Navagraha
-  { hint: "meditation temple", url: "https://i.pinimg.com/736x/68/7e/71/687e7125097fd22a5e79ce7c7b4a2657.jpg" }, // Spiritual Practices
-  { hint: "wise sage", url: "https://i.pinimg.com/736x/d7/79/58/d7795829afebb38a923fe6432d29b0a7.jpg" }, // Ask a Rishi
-  { hint: "sacred scriptures", url: "https://i.pinimg.com/736x/1f/a6/c8/1fa6c81a9bee7a90074b8ccce45e24eb.jpg" }, // Sacred Texts
-  { hint: "email envelope", url: "https://i.pinimg.com/736x/b2/9c/ed/b29ced4ef6587583707c4d4e2462dead.jpg" }, // Contact Us
-  { hint: "settings gears", url: "https://i.pinimg.com/736x/7a/60/e7/7a60e785acfecad3be8530b241a8e95d.jpg" }, // Settings
-  { hint: "user avatar", url: "https://i.pinimg.com/736x/19/e4/4d/19e44d410a646eb00b186915d465fd9f.jpg" }, // Profile
-];
+export const metadata: Metadata = {
+  title: `Explore All Features | ${APP_NAME}`,
+  description: `Discover all features of ${APP_NAME}. Navigate through Purusartha Challenge, Kundli Compass, Astrology Courses, Cosmic Time, Hindu Calendar, Festivals, Nakshatras, Rashis, Navagraha, Sanskaras, Spiritual Practices, Gunas, Numerology, Vastu, and more.`,
+  keywords: ['Explore Features', `${APP_NAME} Features`, 'Vedic Astrology Tools', 'Hindu Rituals', 'Spiritual Guidance', 'Vedic Knowledge', 'Sanatan Dharma', APP_NAME],
+  alternates: {
+    canonical: `${BASE_URL}/explore`,
+  },
+  openGraph: {
+    title: `Explore All Features of ${APP_NAME}`,
+    description: `Discover all features of ${APP_NAME}, your comprehensive guide to Vedic wisdom, astrology, rituals, and spiritual practices.`,
+    url: `${BASE_URL}/explore`,
+    siteName: APP_NAME,
+    images: [
+      {
+        url: `${BASE_URL}/og-images/og-image-explore.png`, 
+        width: 1200,
+        height: 630,
+        alt: `Explore ${APP_NAME} - Features Overview`,
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Explore All Features of ${APP_NAME}`,
+    description: `Discover all features of ${APP_NAME}: Vedic astrology, rituals, spiritual practices, and more.`,
+    images: [`${BASE_URL}/og-images/og-image-explore.png`],
+  },
+};
 
-
-function getFeatureDescription(title: string): string {
-  const item = NAV_ITEMS.find(navItem => navItem.title === title);
-  if (item && item.description) {
-    return item.description;
-  }
-
-  // Fallback descriptions if not found in NAV_ITEMS constants
-  switch (title) {
-    case "Purusartha Challenge":
-      return "Embark on a guided journey to fulfill life's four aims: Dharma, Artha, Kama, and Moksha. Complete tasks and track your progress toward a balanced life.";
-    case "Cosmic Time":
-      return "Discover dynamic planetary positions with live charts and ephemeris. Understand the cosmic influence on your life.";
-    case "Hindu Calendar":
-      return "Stay updated with detailed, tithi-based festival data synced with the Panchang. Never miss an auspicious occasion.";
-    case "Hindu Festivals":
-      return "Explore the rich diversity of Hindu festivals, their stories, and rituals. Celebrate with knowledge and joy.";
-    case "Rashis (Zodiac)":
-      return "Explore the twelve zodiac signs (Rashis) and their significance in Vedic astrology, understanding their influence on personality and life paths.";
-    case "Navagraha":
-      return "Understand the nine celestial bodies in Vedic astrology and their influence on destiny and life events.";
-    case "Spiritual Practices":
-      return "Dive deep into the meanings and methods of worship, sacrifice, and charity. Enrich your spiritual journey.";
-    case "Ask a Rishi":
-      return "Seek guidance from our AI-powered Rishi. Get answers to your spiritual questions through voice or text chat.";
-    case "Sacred Texts":
-      return "Engage with profound Suktas, Stutis, and Stotras. Explore translations and meanings of sacred verses.";
-    case "Contact Us":
-      return "Get in touch with us for any queries, feedback or support. We are here to help!";
-    case "Settings":
-      return "Customize your application settings and preferences for a personalized experience.";
-    case "Profile":
-      return "Manage your user profile, view your activity, track your Purusartha Journey, and set your preferences within SanatanSphere.";
-    default:
-      return "Explore this section to learn more about Sanatan Dharma.";
-  }
+interface FeatureItem {
+  title: string;
+  href: string;
+  icon: LucideIcon;
+  description?: string;
 }
 
+interface FeatureCategory {
+  categoryTitle: string;
+  features: FeatureItem[];
+}
+
+const activeNavItems = NAV_ITEMS.filter(item =>
+  item.href !== '/' &&
+  item.href !== '/explore' &&
+  item.href !== '/sacred-texts' && 
+  item.href !== '/ask-rishi' 
+);
+
+const categorizedFeatures: FeatureCategory[] = [
+  {
+    categoryTitle: "Astrology & Personal Insights",
+    features: activeNavItems.filter(item =>
+      ["/kundli-compass-features", "/astrology-courses", "/nakshatras", "/rashis", "/navagraha", "/numerology-insights", "/dasha-analysis", "/transits", "/varshphal", "/horoscope-forecasts", "/kundli-generator", "/vedic-matchmaking", "/panchang"].includes(item.href)
+    )
+  },
+  {
+    categoryTitle: "Spiritual Journey & Practices",
+    features: activeNavItems.filter(item =>
+      ["/purusartha-challenge", "/shodasha-sanskars", "/spiritual-practices", "/thirty-six-gunas"].includes(item.href)
+    )
+  },
+  {
+    categoryTitle: "Cosmic & Calendrical Systems",
+    features: activeNavItems.filter(item =>
+      ["/cosmic-time", "/hindu-calendar", "/hindu-festivals"].includes(item.href)
+    )
+  },
+  {
+    categoryTitle: "Harmonious Living",
+    features: activeNavItems.filter(item =>
+      ["/vastu-shastra"].includes(item.href)
+    )
+  },
+  {
+    categoryTitle: "Application & Profile",
+    features: activeNavItems.filter(item =>
+      ["/contact", "/settings", "/profile"].includes(item.href)
+    )
+  }
+].filter(category => category.features.length > 0);
+
+const placeholderImages = [
+  // Only for "Astrology & Personal Insights" category (13 items)
+  { hint: "kundli compass astrology", url: "https://i.pinimg.com/736x/a8/0d/4f/a80d4ff0eb2c859e043b3abb3028b2bc.jpg" }, // Kundli Compass
+  { hint: "astrology learning books", url: "https://i.pinimg.com/736x/b7/5f/88/b75f885e9863217732dd0a689bde41bf.jpg" }, // Astrology Courses
+  { hint: "nakshatra constellations stars", url: "https://i.pinimg.com/736x/fd/e4/71/fde4710c0484677e42a49bf961a25da7.jpg" }, // Nakshatras
+  { hint: "zodiac signs astrology", url: "https://i.pinimg.com/736x/ee/32/e5/ee32e5926e939024fcff048c7a2bf09e.jpg" }, // Rashis (Zodiac)
+  { hint: "celestial planets astronomy", url: "https://i.pinimg.com/736x/a2/76/e3/a276e3cd620c8239b908b84a0697f58e.jpg" }, // Navagraha
+  { hint: "numerology numbers chart", url: "https://i.pinimg.com/736x/4b/c2/68/4bc26861647c88ddd9bdfd223b13057d.jpg" }, // Numerology Insights
+  { hint: "planetary periods chart", url: "https://placehold.co/600x400.png" }, // Dasha Analysis
+  { hint: "planet movements sky", url: "https://placehold.co/600x400.png" }, // Transits
+  { hint: "solar return chart", url: "https://placehold.co/600x400.png" }, // Varshphal
+  { hint: "daily horoscope stars", url: "https://placehold.co/600x400.png" }, // Horoscope Forecasts
+  { hint: "birth chart creation", url: "https://placehold.co/600x400.png" }, // Kundli Generator
+  { hint: "marriage compatibility astrology", url: "https://placehold.co/600x400.png" }, // Vedic Matchmaking
+  { hint: "panchang almanac details", url: "https://placehold.co/600x400.png" }, // Panchang
+];
 
 export default function ExplorePage() {
+  let imageIndexCounter = 0; 
+
+  const explorePageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage", 
+    "name": `Explore All Features | ${APP_NAME}`,
+    "description": `Discover all features of ${APP_NAME}. Navigate through Purusartha Challenge, Kundli Compass, Astrology Courses, Cosmic Time, Hindu Calendar, Festivals, Nakshatras, Rashis, Navagraha, Sanskaras, Spiritual Practices, Gunas, Numerology, Vastu, and more.`,
+    "url": `${BASE_URL}/explore`,
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": categorizedFeatures.flatMap(category => 
+        category.features.map(feature => ({
+          "@type": "WebPage",
+          "name": feature.title,
+          "url": `${BASE_URL}${feature.href}`,
+          "description": feature.description || `Explore ${feature.title} on ${APP_NAME}.`
+        }))
+      )
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": APP_NAME,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${BASE_URL}/logo-icon.png` 
+      }
+    }
+  };
+
   return (
-    <div className="container mx-auto py-8">
-      <header className="mb-12 text-center">
-        <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4 mx-auto">
-          <LayoutGrid className="h-16 w-16 text-primary" />
+    <div className="container mx-auto py-8 space-y-16">
+       <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(explorePageJsonLd) }}
+      />
+      <header className="text-center">
+        <div className="inline-flex items-center justify-center p-4 bg-primary/10 rounded-full mb-6 mx-auto shadow-lg">
+          <LayoutGrid className="h-20 w-20 text-primary" />
         </div>
         <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-          Explore SanatanSphere
+          Explore {APP_NAME}
         </h1>
-        <p className="mt-2 text-xl text-muted-foreground max-w-2xl mx-auto">
-          Navigate through the diverse features of SanatanSphere. Click on any card to delve deeper into each aspect.
+        <p className="mt-3 text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          Your comprehensive guide to Vedic wisdom. Discover tools, knowledge, and practices to enrich your spiritual journey.
         </p>
       </header>
 
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {featureCards.map((feature, index) => {
-          // Ensure placeholderImages array is long enough or loop correctly
-          const imageIndex = index % placeholderImages.length; 
-          const placeholderImage = placeholderImages[imageIndex];
+      {categorizedFeatures.map((category) => {
+        const isUtilityCategory = category.categoryTitle === "Application & Profile";
+        const isSpiritualOrCosmicOrHarmonious = [
+          "Spiritual Journey & Practices",
+          "Cosmic & Calendrical Systems",
+          "Harmonious Living"
+        ].includes(category.categoryTitle);
 
-          return (
-            <Card 
-              key={feature.href} 
-              className="flex flex-col overflow-hidden shadow-xl hover:shadow-primary/30 transition-all duration-300 ease-in-out transform hover:scale-105 focus-within:scale-105 focus-within:shadow-primary/30 bg-card border border-border/50 rounded-lg"
-            >
-              <CardHeader className="p-0">
-                <Image
-                  src={placeholderImage.url}
-                  alt={feature.title}
-                  width={600}
-                  height={350} 
-                  className="w-full h-48 object-cover rounded-t-lg" 
-                  data-ai-hint={placeholderImage.hint}
-                />
-              </CardHeader>
-              <CardContent className="p-6 flex-grow flex flex-col">
-                <div className="flex items-center gap-3 mb-3">
-                  <feature.icon className="h-7 w-7 text-accent" />
-                  <CardTitle className="text-2xl font-semibold text-primary">{feature.title}</CardTitle>
-                </div>
-                <CardDescription className="text-base text-muted-foreground mb-6 flex-grow">
-                  {getFeatureDescription(feature.title)}
-                </CardDescription>
-                <Button 
-                  asChild 
-                  variant="default" 
-                  className="mt-auto group w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-colors duration-300"
-                >
-                  <Link href={feature.href}>
-                    Discover {feature.title}
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+        return (
+          <section key={category.categoryTitle}>
+            <h2 className="text-3xl font-semibold text-accent mb-8 pl-2 border-l-4 border-accent">
+              {category.categoryTitle}
+            </h2>
+            <div className={`grid gap-8 md:grid-cols-2 ${isUtilityCategory || isSpiritualOrCosmicOrHarmonious ? 'lg:grid-cols-3' : 'lg:grid-cols-3'}`}>
+              {category.features.map((feature) => {
+                const IconComponent = feature.icon;
+                let imageDetails = null;
+                let shouldUseImage = !isUtilityCategory && !isSpiritualOrCosmicOrHarmonious;
+                
+                if (shouldUseImage && imageIndexCounter < placeholderImages.length) {
+                  imageDetails = placeholderImages[imageIndexCounter];
+                  imageIndexCounter++;
+                }
+
+                if (isUtilityCategory) {
+                  return (
+                    <Card
+                      key={feature.href}
+                      className="flex flex-col overflow-hidden rounded-xl shadow-lg bg-card border-border/40 group transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-primary/30 focus-within:scale-105 focus-within:shadow-primary/30"
+                    >
+                      <CardHeader className="p-5 flex flex-col items-center text-center gap-3">
+                        <div className="p-3 bg-primary/10 text-primary rounded-full">
+                          <IconComponent className="h-10 w-10" />
+                        </div>
+                        <CardTitle className="text-xl font-semibold text-primary group-hover:text-accent transition-colors">
+                          {feature.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-5 pt-0 text-center flex-grow flex flex-col justify-center">
+                        <CardDescription className="text-sm text-muted-foreground mb-4 flex-grow line-clamp-2">
+                          {feature.description || "Access this utility feature."}
+                        </CardDescription>
+                      </CardContent>
+                      <CardFooter className="p-5 pt-0">
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="w-full border-primary/50 text-primary hover:bg-primary/10 hover:text-accent group-hover:border-accent/70 group-hover:text-accent transition-colors duration-300"
+                        >
+                          <Link href={feature.href}>
+                            Open {feature.title}
+                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          </Link>
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  );
+                } else if (isSpiritualOrCosmicOrHarmonious) {
+                  // Card style for "Spiritual Journey & Practices", "Cosmic & Calendrical Systems", "Harmonious Living"
+                  return (
+                    <Card
+                      key={feature.href}
+                      className="flex flex-col overflow-hidden rounded-xl shadow-xl bg-card border-border/40 group transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-primary/30 focus-within:scale-105 focus-within:shadow-primary/30"
+                    >
+                      <CardHeader className="p-6 flex flex-row items-center gap-4">
+                        <div className="p-3 bg-primary/10 text-primary rounded-lg">
+                          <IconComponent className="h-8 w-8" />
+                        </div>
+                        <CardTitle className="text-xl font-semibold text-primary group-hover:text-accent transition-colors">
+                          {feature.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-6 pt-0 flex-grow flex flex-col">
+                        <CardDescription className="text-sm text-muted-foreground mb-5 flex-grow line-clamp-3">
+                          {feature.description || "Explore this section to learn more."}
+                        </CardDescription>
+                      </CardContent>
+                      <CardFooter className="p-6 pt-0">
+                       <Button
+                        asChild
+                        variant="default"
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground group-hover:bg-accent group-hover:text-accent-foreground transition-colors duration-300"
+                      >
+                        <Link href={feature.href}>
+                          Discover {feature.title}
+                          <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                        </Link>
+                      </Button>
+                      </CardFooter>
+                    </Card>
+                  );
+                }
+                
+                // Default card with image (for Astrology & Personal Insights)
+                return (
+                  <Card
+                    key={feature.href}
+                    className="flex flex-col overflow-hidden rounded-xl shadow-xl bg-card border-border/40 group transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-primary/30 focus-within:scale-105 focus-within:shadow-primary/30"
+                  >
+                    <CardHeader className="p-0 relative">
+                      {imageDetails && (
+                        <Image
+                          src={imageDetails.url}
+                          alt={feature.title}
+                          width={600}
+                          height={300}
+                          className="w-full h-48 object-cover rounded-t-xl"
+                          data-ai-hint={imageDetails.hint}
+                          priority={imageIndexCounter <= 3} 
+                        />
+                      )}
+                      <div className="absolute top-3 right-3 p-2 bg-background/70 backdrop-blur-sm rounded-full shadow-lg">
+                         <IconComponent className="h-7 w-7 text-primary" />
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-5 flex-grow flex flex-col">
+                      <CardTitle className="text-2xl font-semibold text-primary mb-2 group-hover:text-accent transition-colors">
+                        {feature.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm text-muted-foreground mb-5 flex-grow line-clamp-3">
+                        {feature.description || "Explore this section to learn more."}
+                      </CardDescription>
+                    </CardContent>
+                    <CardFooter className="p-5 pt-0">
+                       <Button
+                        asChild
+                        variant="default"
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground group-hover:bg-accent group-hover:text-accent-foreground transition-colors duration-300"
+                      >
+                        <Link href={feature.href}>
+                          Discover {feature.title}
+                          <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                        </Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
     </div>
   );
 }
-

@@ -1,8 +1,43 @@
+
 // src/app/contact/page.tsx
+import type { Metadata } from 'next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, Send, Linkedin, Github, Twitter, Instagram } from "lucide-react"; // Added Linkedin, Github, Twitter, Instagram
+import { Mail, Phone, Send, Linkedin, Github, Twitter, Instagram } from "lucide-react"; 
 import Link from "next/link";
+import { APP_NAME } from "@/lib/constants";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+
+export const metadata: Metadata = {
+  title: `Contact Us - Get in Touch with ${APP_NAME}`,
+  description: `Contact ${APP_NAME} for inquiries, feedback, or support regarding our Vedic wisdom platform. Reach out via email, phone, or connect with us on social media (Twitter/X, Instagram, GitHub). We'd love to hear from you!`,
+  keywords: ['Contact Us', 'Support', 'Feedback', 'Inquiries', 'Vedic Platform Contact', 'Sanatan Dharma Help', 'Social Media', APP_NAME],
+  alternates: {
+    canonical: `${BASE_URL}/contact`,
+  },
+  openGraph: {
+    title: `Contact Us - Get in Touch with ${APP_NAME}`,
+    description: `Reach out for inquiries, feedback, or support for ${APP_NAME}. Connect with us on social media.`,
+    url: `${BASE_URL}/contact`,
+    siteName: APP_NAME,
+    images: [
+      {
+        url: `${BASE_URL}/og-images/og-image-contact.png`, 
+        width: 1200,
+        height: 630,
+        alt: `Contact ${APP_NAME}`,
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Contact Us - Get in Touch with ${APP_NAME}`,
+    description: `Reach out for inquiries, feedback, or support for ${APP_NAME}.`,
+    images: [`${BASE_URL}/og-images/og-image-contact.png`],
+  },
+};
 
 const socialLinks = [
   {
@@ -23,12 +58,44 @@ const socialLinks = [
     icon: Github,
     username: "astromanreal",
   },
-  // Add other social links here if needed
 ];
 
 export default function ContactPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": metadata.title as string,
+    "description": metadata.description as string,
+    "url": `${BASE_URL}/contact`,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${BASE_URL}/contact`
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": APP_NAME,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${BASE_URL}/logo-icon.png`
+      },
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+91-8102116569",
+          "contactType": "Customer Support",
+          "email": "astroman6569@gmail.com",
+          "areaServed": "Worldwide"
+        }
+      ]
+    }
+  };
+
   return (
     <div className="container mx-auto py-12 px-4">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Card className="max-w-3xl mx-auto shadow-xl border-primary/20 rounded-lg">
         <CardHeader className="text-center pb-8">
           <div className="inline-flex items-center justify-center p-4 bg-primary/10 rounded-full mb-6 mx-auto">
@@ -43,7 +110,6 @@ export default function ContactPage() {
         </CardHeader>
 
         <CardContent className="space-y-10">
-          {/* Direct Contact Section */}
           <section>
             <h2 className="text-2xl font-semibold text-accent mb-6 text-center sm:text-left">Direct Contact</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -75,7 +141,6 @@ export default function ContactPage() {
             </div>
           </section>
 
-          {/* Connect Online Section */}
           <section>
             <h2 className="text-2xl font-semibold text-accent mb-6 text-center sm:text-left">Connect Online</h2>
             <p className="text-muted-foreground mb-6 text-center sm:text-left">
@@ -104,3 +169,4 @@ export default function ContactPage() {
     </div>
   );
 }
+

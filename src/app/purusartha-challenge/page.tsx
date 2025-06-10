@@ -2,16 +2,37 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link"; // Added Link import
+import Link from "next/link"; 
+import type { Metadata } from 'next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Goal, CheckCircle2, Circle, Activity, ArrowRight } from "lucide-react"; // Added Activity and ArrowRight
+import { Goal, CheckCircle2, Circle, Activity, ArrowRight, CheckCircle, Loader2 } from "lucide-react"; 
 import { purusarthaGoalsData } from "@/data/purusartha-tasks";
 import type { PurusarthaGoalData, PurusarthaTask, PurusarthaCompletionStatus } from "@/types";
+import { cn } from "@/lib/utils";
+import { APP_NAME } from "@/lib/constants";
+
+// Metadata for Purusartha Challenge Page (Server Component part, if this were a server component)
+// For client components, metadata is typically handled in the nearest server component layout or page.
+// However, as this is a page.tsx, we can define it here.
+export const metadataObject: Metadata = {
+  title: `Purusartha & Well-being Challenge | ${APP_NAME}`,
+  description: `Embark on the Purusartha & Daily Well-being Challenge. Fulfill Dharma, Artha, Kama, Moksha, and cultivate Nitya Karma for a balanced life in ${APP_NAME}.`,
+  keywords: ['Purusartha', 'Dharma', 'Artha', 'Kama', 'Moksha', 'Nitya Karma', 'Well-being Challenge', 'Hindu Life Goals', 'Spiritual Journey', APP_NAME],
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/purusartha-challenge`,
+  },
+  openGraph: {
+    title: `Purusartha & Well-being Challenge | ${APP_NAME}`,
+    description: 'Fulfill life\'s four aims and cultivate daily well-being. Track your progress.',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/purusartha-challenge`,
+  },
+};
+
 
 const LOCAL_STORAGE_KEY = "purusarthaCompletionStatus";
 
@@ -60,9 +81,9 @@ export default function PurusarthaChallengePage() {
 
   if (!mounted) {
     return (
-        <div className="container mx-auto py-8 flex justify-center items-center min-h-[calc(100vh-10rem)]">
-            <Goal className="h-16 w-16 text-primary animate-spin" />
-            <p className="ml-4 text-xl text-muted-foreground">Loading Purusartha & Well-being Journey...</p>
+        <div className="container mx-auto py-8 flex flex-col justify-center items-center min-h-[calc(100vh-10rem)]">
+            <Loader2 className="h-16 w-16 text-primary animate-spin mb-4" />
+            <p className="text-xl text-muted-foreground">Loading Purusartha & Well-being Journey...</p>
         </div>
     );
   }
@@ -73,7 +94,6 @@ export default function PurusarthaChallengePage() {
 
   return (
     <div className="container mx-auto py-8">
-      {/* Nitya Karma Hero Section - Moved from homepage */}
       <section className="py-16 bg-gradient-to-br from-accent/10 via-background to-primary/10 rounded-lg shadow-2xl border border-accent/20 mb-12">
         <div className="container mx-auto px-4 text-center">
           <div className="inline-flex items-center justify-center p-4 bg-accent/20 rounded-full mb-6 mx-auto shadow-lg">
@@ -86,7 +106,7 @@ export default function PurusarthaChallengePage() {
             Cultivate daily spiritual, mental, and physical well-being. Consistently performing Nitya Karma contributes to your overall vitality and a balanced life. These essential practices are foundational to your Purusartha journey.
           </p>
           <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out group">
-            <Link href="#NityaKarma"> {/* Updated href to scroll to NityaKarma accordion item */}
+            <Link href="#NityaKarma">
               Explore Nitya Karma Tasks <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
           </Button>
@@ -123,17 +143,21 @@ export default function PurusarthaChallengePage() {
 
               return (
                 <AccordionItem value={goal.id} key={goal.id} id={goal.id} className="border bg-background rounded-lg shadow-md hover:shadow-primary/10 transition-shadow scroll-mt-20">
-                  <AccordionTrigger className="px-6 py-4 text-left hover:no-underline text-xl font-semibold text-primary data-[state=open]:bg-primary/5">
+                  <AccordionTrigger className={cn(
+                    "px-6 py-4 text-left hover:no-underline text-xl font-semibold text-primary data-[state=open]:bg-primary/5 transition-colors duration-150",
+                    categoryProgress === 100 && "bg-green-500/10 hover:bg-green-500/15 data-[state=open]:bg-green-500/15 data-[state=open]:text-green-700 text-green-600 hover:text-green-700"
+                  )}>
                     <div className="flex items-center">
-                      <goal.icon className="h-7 w-7 mr-3 text-accent" />
+                      <goal.icon className={cn("h-7 w-7 mr-3 text-accent", categoryProgress === 100 && "text-green-600")} />
                       {goal.title}
+                      {categoryProgress === 100 && <CheckCircle className="h-6 w-6 ml-3 text-green-600" />}
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="px-6 py-4 border-t border-border">
                     <p className="text-muted-foreground mb-4">{goal.description}</p>
                     <div className="mb-4">
                       <h4 className="text-sm font-medium text-foreground mb-1">Progress: {categoryCompletedTasks} / {categoryTasks.length}</h4>
-                      <Progress value={categoryProgress} className="h-2" />
+                      <Progress value={categoryProgress} className={cn("h-2", categoryProgress === 100 && "[&>div]:bg-green-500")} />
                     </div>
                     <ul className="space-y-3">
                       {goal.tasks.map((task: PurusarthaTask) => (
@@ -175,4 +199,3 @@ export default function PurusarthaChallengePage() {
     </div>
   );
 }
-

@@ -1,6 +1,7 @@
+
 "use client";
 
-import React from "react"; // Added missing React import
+import React from "react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -16,7 +17,8 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 // Filter out items that are already directly in the header for md+ screens.
-const mainHeaderIconsHrefs = ['/explore', '/contact', '/settings', '/profile'];
+// Added /kundli-compass-features as it now has a dedicated icon.
+const mainHeaderIconsHrefs = ['/explore', '/contact', '/settings', '/profile', '/kundli-compass-features'];
 const dropdownMenuItems = NAV_ITEMS.filter(item => !mainHeaderIconsHrefs.includes(item.href));
 
 
@@ -33,8 +35,8 @@ export function MoreNavMenu() {
         
          <DropdownMenuItem asChild className={cn(
             (pathname === '/') && "bg-accent text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-             // Show Dashboard in dropdown on all screen sizes if not in main nav icons.
-             // For mobile, it's already in NavSheet. This ensures consistency for desktop-like views on smaller screens.
+             // Show Dashboard in dropdown if not represented by another main icon (it is via Logo).
+             // This logic mainly affects scenarios where the main icon links might change.
             !mainHeaderIconsHrefs.includes('/') && "flex md:hidden" 
          )}>
               <Link href="/" className="flex items-center gap-2">
@@ -47,21 +49,22 @@ export function MoreNavMenu() {
 
 
         {dropdownMenuItems.map((item, index) => (
-          <React.Fragment key={item.href}>
-            <DropdownMenuItem asChild className={cn(
-              (pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href))) && "bg-accent text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-            )}>
-              <Link href={item.href} className="flex items-center gap-2">
-                <item.icon className="h-4 w-4" />
-                <span>{item.title}</span>
-                {item.external && <ExternalLink className="ml-auto h-3 w-3" />}
-              </Link>
-            </DropdownMenuItem>
-            {/* Separator logic: Add separator after specific items if they are not the last one */}
-            {/* Example: Add separator after "Sacred Texts" */}
-            {(item.title === "Sacred Texts" && index < dropdownMenuItems.length -1) && <DropdownMenuSeparator/>}
-
-          </React.Fragment>
+          // Only render items that are not the dashboard, as dashboard is handled above or via logo.
+          item.href !== '/' && (
+            <React.Fragment key={item.href}>
+              <DropdownMenuItem asChild className={cn(
+                (pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href))) && "bg-accent text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+              )}>
+                <Link href={item.href} className="flex items-center gap-2">
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.title}</span>
+                  {item.external && <ExternalLink className="ml-auto h-3 w-3" />}
+                </Link>
+              </DropdownMenuItem>
+              {/* Separator logic: Example, add separator after "Sacred Texts" */}
+              {(item.title === "Sacred Texts" && index < dropdownMenuItems.filter(i => i.href !== '/').length -1) && <DropdownMenuSeparator/>}
+            </React.Fragment>
+          )
         ))}
       </DropdownMenuContent>
     </DropdownMenu>

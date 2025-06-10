@@ -2,8 +2,9 @@
 "use client";
 
 import * as React from "react";
+import type { Metadata } from 'next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { UserCircle2, Goal, CheckCircle, ListChecks, Activity, History, Star } from "lucide-react"; // Added Star
+import { UserCircle2, Goal, CheckCircle, ListChecks, Activity, History, Star, Loader2, Settings } from "lucide-react"; 
 import { Progress } from "@/components/ui/progress";
 import { purusarthaGoalsData } from "@/data/purusartha-tasks";
 import type { PurusarthaCompletionStatus, PurusarthaGoalData, Rashi } from "@/types";
@@ -18,6 +19,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { rashiData } from "@/data/rashi-data";
+import { APP_NAME } from "@/lib/constants";
+import { Tooltip, TooltipProvider, TooltipContent } from "@/components/ui/tooltip";
+
+export const metadataObject: Metadata = {
+  title: `User Profile - My Spiritual Journey | ${APP_NAME}`,
+  description: `Manage your ${APP_NAME} user profile. Track your Purusartha & Well-being Challenge progress, view insights, and set your preferences.`,
+  keywords: ['User Profile', 'Spiritual Journey Tracker', 'Purusartha Progress', 'Vedic Astrology Profile', 'Personal Settings', APP_NAME],
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/profile`,
+  },
+  openGraph: {
+    title: `User Profile - My Spiritual Journey | ${APP_NAME}`,
+    description: 'Track your Purusartha progress and manage your spiritual journey settings.',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/profile`,
+  },
+};
 
 const LOCAL_STORAGE_PURUSARTHA_KEY = "purusarthaCompletionStatus";
 const LOCAL_STORAGE_RASHI_KEY = "sanatanSphere_userSelectedRashi";
@@ -56,9 +73,9 @@ export default function ProfilePage() {
 
   if (!mounted) {
     return (
-        <div className="container mx-auto py-8 flex justify-center items-center min-h-[calc(100vh-10rem)]">
-            <UserCircle2 className="h-16 w-16 text-primary animate-pulse" />
-            <p className="ml-4 text-xl text-muted-foreground">Loading Profile...</p>
+        <div className="container mx-auto py-8 flex flex-col justify-center items-center min-h-[calc(100vh-10rem)]">
+            <Loader2 className="h-16 w-16 text-primary animate-spin mb-4" />
+            <p className="text-xl text-muted-foreground">Loading Profile...</p>
         </div>
     );
   }
@@ -176,6 +193,7 @@ export default function ProfilePage() {
                   {purusarthaGoalsData.flatMap(goal => 
                     goal.tasks
                       .filter(task => completionStatus[task.id])
+                      .slice(0, 5) 
                       .map(task => (
                         <li key={task.id} className="flex items-center text-sm p-2 bg-green-500/10 rounded-md">
                           <CheckCircle className="h-4 w-4 text-green-600 mr-2 shrink-0" />
@@ -184,7 +202,7 @@ export default function ProfilePage() {
                           </span>
                         </li>
                       ))
-                  )}
+                  ).filter(item => item !== null)} 
                 </ul>
               </ScrollArea>
             ) : (
@@ -202,7 +220,15 @@ export default function ProfilePage() {
             <CardContent className="p-0 space-y-6">
                 <div>
                     <p className="text-muted-foreground">
-                    Personal information and preferences will be displayed here. (Feature coming soon)
+                    Personal information and preferences will be displayed here. 
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant="link" className="p-1 h-auto text-xs">(Coming Soon)</Button>
+                            </TooltipTrigger>
+                            <TooltipContent><p>Feature under development</p></TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                     </p>
                     <div data-ai-hint="user settings form" className="mt-4 aspect-[16/9] bg-muted rounded-md flex items-center justify-center">
                     <p className="text-muted-foreground">Placeholder for Profile Information Form</p>
@@ -214,18 +240,35 @@ export default function ProfilePage() {
                         Activity History
                     </h4>
                     <p className="text-muted-foreground">
-                        Your daily task completion history and insights will be shown here. (Feature coming soon)
+                        Your daily task completion history and insights will be shown here. 
+                         <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button variant="link" className="p-1 h-auto text-xs">(Coming Soon)</Button>
+                                </TooltipTrigger>
+                                <TooltipContent><p>Feature under development</p></TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     </p>
                     <div data-ai-hint="calendar activity log" className="mt-3 aspect-[16/9] bg-muted rounded-md flex items-center justify-center">
                         <p className="text-muted-foreground">Placeholder for Daily Activity Log</p>
                     </div>
                 </div>
+                 <div className="mt-6 text-center">
+                    <Button variant="outline" asChild>
+                        <Link href="/settings">
+                            <Settings className="mr-2 h-4 w-4" />
+                            Go to App Settings
+                        </Link>
+                    </Button>
+                </div>
             </CardContent>
           </Card>
-
         </CardContent>
       </Card>
     </div>
   );
 }
 
+
+    
